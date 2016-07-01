@@ -1,4 +1,5 @@
 var request = require('request');
+var spotify = require('spotify');
 
 var command = process.argv[2];
 var userInput = process.argv[3];
@@ -26,6 +27,42 @@ switch(command){
 
 
 
+function spotifyThisSong() {
+
+var nodeArgs = process.argv;
+var songTitle = "";
+
+for (var i=3; i<nodeArgs.length; i++){
+
+	if (i>2 && i< nodeArgs.length){
+
+		songTitle = songTitle + "+" + nodeArgs[i];
+	}
+	else {
+		songTitle = songTitle + nodeArgs[i];
+	}
+}
+
+spotify.search({ type: 'track', query: songTitle }, function(err, data) {
+    if ( err ) {
+        console.log('Error occurred: ' + err);
+        return;
+    }
+ 		console.log("Artist: " + data.tracks.items[0].artists[0].name);
+    console.log("Song Title: " + data.tracks.items[0].name);
+    console.log("Preview Link: " + data.tracks.items[0].preview_url);
+    console.log("Album Title: " + data.tracks.items[0].album.name);
+});
+}
+
+
+
+
+
+/////////////////////
+
+
+
 function movieThis() {
 
 var nodeArgs = process.argv;
@@ -36,18 +73,15 @@ for (var i=3; i<nodeArgs.length; i++){
 	if (i>2 && i< nodeArgs.length){
 
 		movieName = movieName + "+" + nodeArgs[i];
-
 	}
-
 	else {
-
 		movieName = movieName + nodeArgs[i];
 	}
 }
 var queryUrl = 'http://www.omdbapi.com/?t=' + movieName +'&y=&plot=short&tomatoes=true&r=json';
 
 // This line is just to help us debug against the actual URL.  
-console.log(queryUrl);
+// console.log(queryUrl);
 
 request(queryUrl, function (error, response, body) {
 
