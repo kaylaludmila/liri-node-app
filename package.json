@@ -1,0 +1,19 @@
+{
+  "name": "liri.js",
+  "version": "1.0.0",
+  "description": "Liri helper created in node",
+  "main": "keys.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaylaludmila/liri-node-app.git"
+  },
+  "author": "Kayla Martin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaylaludmila/liri-node-app/issues"
+  },
+  "homepage": "https://github.com/kaylaludmila/liri-node-app#readme"
+}
