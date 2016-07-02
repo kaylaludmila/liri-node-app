@@ -1,9 +1,11 @@
 var request = require('request');
 var spotify = require('spotify');
+var Twitter = require('twitter');
+var fs = require('fs');
+var key = require('./keys.js')
 
 var command = process.argv[2];
 var userInput = process.argv[3];
-
 
 
 switch(command){
@@ -24,25 +26,47 @@ switch(command){
     break;
 }
 
+function myTweets(){
+	var twitter = new Twitter(key.twitterKeys)
+	var params = {screen_name: 'KaylaLudmila'};
+	twitter.get('statuses/user_timeline', params, function(error, tweets, response){
+	  if (!error) {
+	  	for (var i = 0; i<tweets.length; i++){
+	  	console.log(tweets[i].text);
+	  	console.log(tweets[i].user.created_at);
+			}
+		}
+	});
+}	
 
 
 
-function spotifyThisSong() {
+function spotifyThisSong(songTitle) {
 
 var nodeArgs = process.argv;
-var songTitle = "";
 
-for (var i=3; i<nodeArgs.length; i++){
 
-	if (i>2 && i< nodeArgs.length){
+if (songTitle	=== undefined) {
+	var songTitle = "";
 
-		songTitle = songTitle + "+" + nodeArgs[i];
-	}
-	else {
-		songTitle = songTitle + nodeArgs[i];
+	if (nodeArgs.length<=3 ){
+		songTitle = "what's my age again"
+	}else{
+		for (var i=3; i<nodeArgs.length; i++){
+
+			if (i>3 && i< nodeArgs.length){
+
+				songTitle = songTitle + "+" + nodeArgs[i];
+			}
+			else {
+				songTitle = songTitle + nodeArgs[i];
+			}
+		}
 	}
 }
 
+
+console.log('song: '+songTitle);
 spotify.search({ type: 'track', query: songTitle }, function(err, data) {
     if ( err ) {
         console.log('Error occurred: ' + err);
@@ -56,32 +80,29 @@ spotify.search({ type: 'track', query: songTitle }, function(err, data) {
 }
 
 
-
-
-
-/////////////////////
-
-
-
 function movieThis() {
 
 var nodeArgs = process.argv;
 var movieName = "";
 
-for (var i=3; i<nodeArgs.length; i++){
 
-	if (i>2 && i< nodeArgs.length){
 
-		movieName = movieName + "+" + nodeArgs[i];
+if (nodeArgs.length<=3 ){
+		movieName = "Mr.Nobody"
+	}else{
+		for (var i=3; i<nodeArgs.length; i++){
+
+			if (i>3 && i< nodeArgs.length){
+
+				movieName = movieName + "+" + nodeArgs[i];
+			}
+			else {
+					movieName = movieName + nodeArgs[i];
+			}
+		}
 	}
-	else {
-		movieName = movieName + nodeArgs[i];
-	}
-}
+
 var queryUrl = 'http://www.omdbapi.com/?t=' + movieName +'&y=&plot=short&tomatoes=true&r=json';
-
-// This line is just to help us debug against the actual URL.  
-// console.log(queryUrl);
 
 request(queryUrl, function (error, response, body) {
 
@@ -110,5 +131,29 @@ request(queryUrl, function (error, response, body) {
 })
 };
 
+function doWhatItSays(){
 
+    fs.readFile("random.txt", "utf8", function(err, data){
+
+        var input = data.split(',');
+				 command = input[0];
+				 song = input[1];
+         console.log('command'+command);
+
+					switch(command){
+				    case 'my-tweets':
+				      myTweets();
+				    break;
+
+				    case 'spotify-this-song':
+				      spotifyThisSong(song);
+				    break;
+
+				    case 'movie-this':
+				      movieThis();
+				    break;
+				}
+			});	
+
+    };
 
